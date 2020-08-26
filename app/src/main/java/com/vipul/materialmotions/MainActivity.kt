@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+        floatingActionButton.setOnClickListener {
             currentNavigationFragment?.apply {
                 exitTransition = MaterialElevationScale(false).apply {
                     duration = 700

@@ -23,7 +23,7 @@ class SecondFragment : BaseFragment<FragmentSecondBinding>() {
         transformation.interpolator = AnimationUtils.LINEAR_INTERPOLATOR
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.nav_host_fragment
-            duration = 1000
+            duration = 400
             scrimColor = Color.TRANSPARENT
         }
     }
@@ -31,16 +31,10 @@ class SecondFragment : BaseFragment<FragmentSecondBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val key = args.color.first as String
-        val color = args.color.second as String
-
-        with(binding.textView) {
-            text = key
-        }
+        val key = args.transition
 
         with(binding.cardView) {
-            setBackgroundColor(Color.parseColor(color))
-            transitionName = color
+            transitionName = key
         }
     }
 }

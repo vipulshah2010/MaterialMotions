@@ -31,8 +31,8 @@
         android:name="com.vipul.materialmotions.SecondFragment"
         android:label="SecondFragment">
         <argument
-            android:name="color"
-            app:argType="kotlin.Pair" />
+            android:name="transition"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/thirdFragment"

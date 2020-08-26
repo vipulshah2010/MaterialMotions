@@ -1,6 +1,5 @@
 package com.vipul.materialmotions
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,8 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.vipul.materialmotions.databinding.FragmentFirstBinding
-import com.vipul.materialmotions.databinding.RowCardBinding
-import java.io.IOException
+import com.vipul.materialmotions.databinding.RowEvenBinding
 
 class FirstFragment : BaseFragment<FragmentFirstBinding>() {
 
@@ -26,45 +21,23 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        val map = Types.newParameterizedType(
-            MutableMap::class.java,
-            String::class.java,
-            Any::class.java
-        )
+        binding.cardsRecyclerView.adapter =
+            CardsAdapter(event = { rowEvenBinding ->
+                val extras: FragmentNavigator.Extras = FragmentNavigatorExtras(
+                    rowEvenBinding.cardView to rowEvenBinding.cardView.transitionName
+                )
+                findNavController().navigate(
+                    FirstFragmentDirections.actionListToDetails(rowEvenBinding.cardView.transitionName),
+                    extras
+                )
 
-        val json =
-            requireContext().assets.open("colors.json")
-                .bufferedReader().use { it.readText() }
-
-
-        try {
-            Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-                .adapter<Map<String, String>>(map).fromJson(json)?.let { it ->
-                    binding.cardsRecyclerView.adapter =
-                        CardsAdapter(it) {
-                            val extras: FragmentNavigator.Extras = FragmentNavigatorExtras(
-                                it.cardView to it.cardView.transitionName
-                            )
-                            findNavController().navigate(
-                                FirstFragmentDirections.actionListToDetails(
-                                    Pair(
-                                        it.textView.transitionName,
-                                        it.cardView.transitionName
-                                    )
-                                ), extras
-                            )
-
-                            exitTransition = MaterialElevationScale(false).apply {
-                                duration = 300
-                            }
-                            reenterTransition = MaterialElevationScale(true).apply {
-                                duration = 300
-                            }
-                        }
+                exitTransition = MaterialElevationScale(false).apply {
+                    duration = 100
                 }
-        } catch (exception: IOException) {
-
-        }
+                reenterTransition = MaterialElevationScale(true).apply {
+                    duration = 100
+                }
+            })
     }
 
     override fun getBinding(inflater: LayoutInflater, container: ViewGroup?, bundle: Bundle?) =
@@ -72,21 +45,16 @@ class FirstFragment : BaseFragment<FragmentFirstBinding>() {
 }
 
 class CardsAdapter(
-    private val colors: Map<String, String>,
-    private val event: (RowCardBinding) -> Unit
+    private val event: (RowEvenBinding) -> Unit
 ) :
     RecyclerView.Adapter<CardsViewHolder>() {
 
-    private val keys: List<String> by lazy {
-        ArrayList<String>(colors.keys)
-    }
-
     override fun getItemCount(): Int {
-        return colors.size
+        return 5
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardsViewHolder {
-        val binding = RowCardBinding.inflate(
+        val binding = RowEvenBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false
         )
@@ -95,14 +63,8 @@ class CardsAdapter(
 
     override fun onBindViewHolder(holder: CardsViewHolder, position: Int) {
 
-        with(holder.binding.textView) {
-            text = keys[position]
-            transitionName = keys[position]
-        }
-
         with(holder.binding.cardView) {
-            setBackgroundColor(Color.parseColor(colors[keys[position]]))
-            transitionName = colors[keys[position]]
+            transitionName = "Card $position"
         }
 
         holder.itemView.setOnClickListener {
@@ -111,4 +73,4 @@ class CardsAdapter(
     }
 }
 
-class CardsViewHolder(val binding: RowCardBinding) : RecyclerView.ViewHolder(binding.root)
+class CardsViewHolder(val binding: RowEvenBinding) : RecyclerView.ViewHolder(binding.root)

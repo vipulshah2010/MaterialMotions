@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:layout_width="100dp"
+        android:layout_height="100dp">
+        <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
+            <solid android:color="#66FFFFFF" />
+        </shape>
+    </item>
+
+    <item
+        android:width="45dp"
+        android:height="45dp"
+        android:bottom="8dp"
+        android:drawable="@drawable/ic_svg_star"
+        android:end="8dp"
+        android:gravity="center"
+        android:start="8dp"
+        android:top="8dp" />
+
+</layer-list>
